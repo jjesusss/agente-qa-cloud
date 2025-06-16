@@ -1,0 +1,21 @@
+# .github/workflows/run-tests.yml
+name: Executar Testes Cypress
+
+# Aciona o workflow em qualquer push para o repositório
+on: [push]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Cypress e dependências
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false # Não executa os testes ainda
+
+      - name: Executar o teste gerado pela IA
+        # Este comando irá executar apenas o teste específico que nosso agente cria
+        run: npx cypress run --spec "cypress/e2e/ai_generated_test.cy.js"
