@@ -1,27 +1,29 @@
-describe('Teste E2E da Página Inicial', () => {
-    beforeEach(() => {
+Cypress.Commands.add("validateBanner", () => {
+    cy.get('div._container_p0nid_1').should('be.visible'); // Verifica banner desktop
+    cy.get('div._container_qenym_129').should('be.visible'); // Verifica banner mobile
+});
+
+describe('Teste E2E', () => {
+    it('Valida a página inicial e suas funcionalidades', () => {
+        // a. Visita a página inicial
         cy.visit('/');
-    });
 
-    it('Valida a renderização dos banners e interações na página inicial', () => {
-        // Valida a renderização de banners desktop e mobile
-        cy.get('div._desktopBanner_1ceul_144').should('be.visible');
-        cy.get('div._mobileBanner_1ceul_157').should('be.visible');
+        // b. Valida renderização de banners desktop e mobile
+        cy.validateBanner();
 
-        // Verifica conteúdo do bloco "Próximos Eventos"
-        cy.contains('Próximos Eventos').should('be.visible');
-        cy.contains('Veja os próximos eventos na Superbid Exchange').should('be.visible');
+        // c. Verifica conteúdo do bloco "Próximos Eventos"
+        cy.get('div._container_qenym_129').contains('Próximos Eventos').should('be.visible');
 
-        // Valida a presença e clique do botão "Lista completa de eventos"
-        cy.get('button[data-testid="button-testid"]').should('be.visible').click();
+        // d. Valida a presença e clique do botão "Lista completa de eventos"
+        cy.get('button').contains('Lista completa de eventos').should('be.visible').click();
 
-        // Interage com o carrossel de categorias e valida pelo menos um item visível
-        cy.get('.slick-slider').find('.slick-slide.slick-active').first().should('be.visible');
+        // e. Interage com o carrossel de categorias, validando pelo menos um item visível
+        cy.get('.carousel-categories').find('.category-item').first().should('be.visible');
 
-        // Interage com o carrossel de eventos ao vivo ("Acontecendo agora")
-        cy.get('._FeaturedLivesContainer_7mytm_129').should('be.visible');
+        // f. Interage com o carrossel de eventos ao vivo ("Acontecendo agora")
+        cy.get('.carousel-live-events').find('.event-item').first().should('be.visible').click();
 
-        // Valida o botão "Ver Todos" em "Próximos Eventos"
-        cy.get('button[data-testid="button-testid"]').contains('Lista completa de eventos').should('be.visible');
+        // g. Valida o botão "Ver Todos" em "Próximos Eventos"
+        cy.get('button').contains('Ver Todos').should('be.visible');
     });
 });
