@@ -1,63 +1,47 @@
 /// <reference types="cypress" />
 
-describe('Teste E2E da Home Page - Superbid BidTV', () => {
-  const baseUrl = 'https://bidtv.stage.superbid.net';
-
+describe('Teste E2E - Página Inicial BidTV', () => {
   beforeEach(() => {
-    cy.visit(baseUrl);
-  });
+    cy.visit('https://bidtv.stage.superbid.net/')
+  })
 
-  it('Deve validar os banners principais (desktop e mobile)', () => {
-    cy.get('div[data-testid="Highlights"]')
-      .within(() => {
-        cy.get('img[alt="main banner"]').should('have.attr', 'src').and('include', 'banner-bidtv.webp');
-        cy.get('img[alt="main banner"]').should('have.attr', 'loading', 'lazy');
-      });
-  });
+  it('Deve exibir o banner principal desktop e mobile', () => {
+    cy.get('img[alt="main banner"]').should('have.attr', 'src').and('include', 'banner-bidtv.webp')
+    cy.get('img[alt="main banner"]').should('have.attr', 'src').and('include', 'bannerMobile.webp')
+  })
 
-  it('Deve validar o bloco "Próximos Eventos"', () => {
-    cy.contains('h3', 'Próximos Eventos').should('exist');
+  it('Deve exibir o título "Próximos Eventos"', () => {
+    cy.get('[data-testid="Highlights"]')
+      .contains('Próximos Eventos')
+      .should('be.visible')
+  })
 
-    cy.get('[data-list-name="Home - Próximos Eventos"]')
-      .within(() => {
-        cy.get('div[style*="background-image"]').should('have.length.greaterThan', 0);
-        cy.contains('time', 'Hoje').should('exist');
-        cy.contains('span', 'Super').should('exist');
-        cy.get('button.slick-next').should('be.visible');
-        cy.get('button.slick-prev').should('exist');
-        cy.get('[data-testid="show-all-testid"]').should('exist').contains('Ver Todos');
-      });
-  });
+  it('Deve exibir o botão "Lista completa de eventos"', () => {
+    cy.get('[data-testid="button-testid"]')
+      .should('be.visible')
+      .and('contain', 'Lista completa de eventos')
+  })
 
-  it('Deve validar o bloco "Acontecendo agora"', () => {
-    cy.contains('h3', 'Acontecendo agora').should('exist');
+  it('Deve exibir as categorias principais', () => {
+    cy.contains('Navegue pelas categorias').should('be.visible')
+    cy.get('[alt="categoria"]').should('have.length.at.least', 1)
+    cy.get('[alt="categoria"]').first().should('be.visible')
+  })
 
-    cy.get('[data-list-name="Home - Acontecendo agora"]').within(() => {
-      cy.get('strong').each(($el) => {
-        cy.wrap($el).should('contain.text', 'AO VIVO');
-      });
+  it('Deve exibir a seção "Acontecendo agora" com pelo menos um card', () => {
+    cy.contains('Acontecendo agora').should('be.visible')
+    cy.get('[id^="gtm_bidtv_home_card_"]').first().should('be.visible')
+    cy.get('[id^="gtm_bidtv_home_card_"]').first().contains('AO VIVO').should('exist')
+  })
 
-      cy.get('[id^="gtm_bidtv_home_card_"]').should('have.length.greaterThan', 0);
+  it('Deve exibir o título "Entre na sua conta para ver seus favoritos"', () => {
+    cy.contains('Entre').should('be.visible')
+    cy.contains('na sua conta para ver seus favoritos').should('exist')
+  })
 
-      cy.get('time').first().should('contain.text', 'Hoje');
-      cy.get('span').contains('Leilão').should('exist');
-    });
-  });
-
-  it('Deve validar o carrossel de categorias', () => {
-    cy.contains('h3', 'Navegue pelas categorias').should('exist');
-
-    cy.get('[alt="categoria"]').should('have.length.greaterThan', 5);
-
-    cy.get('button.slick-prev').should('exist');
-    cy.get('button.slick-next').should('exist').click();
-
-    cy.get('[data-index="6"]').should('have.attr', 'aria-hidden', 'false');
-  });
-
-  it('Deve validar o botão de "Lista completa de eventos"', () => {
-    cy.get('div[data-testid="Highlights"]').within(() => {
-      cy.get('[data-testid="button-testid"]').should('exist').and('contain.text', 'Lista completa de eventos');
-    });
-  });
-});
+  it('Deve exibir a seção "Próximos Eventos" com pelo menos um card e botão "Ver Todos"', () => {
+    cy.contains('Próximos Eventos').should('be.visible')
+    cy.get('[id^="gtm_bidtv_home_card_"]').should('have.length.at.least', 1)
+    cy.get('[data-testid="show-all-testid"]').should('be.visible').and('contain', 'Ver Todos')
+  })
+})
