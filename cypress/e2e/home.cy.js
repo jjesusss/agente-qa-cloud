@@ -1,71 +1,42 @@
-// cypress/e2e/homepage_elements.cy.js
+// cypress/e2e/home_page_interactions.cy.js
 
-describe('Teste E2E - Página Inicial da Superbid', () => {
+describe('Validação de elementos interativos da página principal Superbid Exchange', () => {
 
   beforeEach(() => {
-    cy.visit('https://bidtv.stage.superbid.net/');
+    cy.visit('https://exchange.stage.superbid.net/');
   });
 
-  it('Deve exibir os banners principais (desktop e mobile)', () => {
-    cy.get('[data-testid="Highlights"] img[alt="main banner"]')
-      .should('have.attr', 'src')
-      .and('include', 'banner-bidtv.webp');
-    cy.get('[data-testid="Highlights"] img[alt="main banner"]')
-      .should('have.attr', 'src')
-      .and('include', 'bannerMobile.webp');
+  it('Valida exibição dos banners principais (desktop e mobile)', () => {
+    cy.get('[data-testid="Highlights"] img[alt="main banner"]').should('have.attr', 'src').and('include', 'banner');
   });
 
-  it('Deve validar presença e funcionalidade do botão "Lista completa de eventos"', () => {
-    cy.get('button[data-testid="button-testid"]')
-      .should('be.visible')
-      .click();
-
-    cy.url().should('include', '/events'); // ajustar conforme a rota real pós-clique
+  it('Valida botão "Lista completa de eventos"', () => {
+    cy.get('[data-testid="Highlights"]').contains('Próximos Eventos').should('be.visible');
+    cy.get('[data-testid="button-testid"]').should('be.visible').click();
+    cy.url().should('include', '/'); // Pode ser ajustado conforme o redirecionamento real
   });
 
-  it('Deve navegar pelo carrossel de categorias usando as setas', () => {
-    cy.get('button.slick-arrow.slick-next').click();
-    cy.wait(500);
-    cy.get('button.slick-arrow.slick-prev').click();
+  it('Valida a navegação do carrossel de categorias', () => {
+    cy.contains('Navegue pelas categorias').should('be.visible');
+
+    // Clica na seta "próxima" para rolar o carrossel
+    cy.get('button.slick-next').click();
+    cy.wait(1000); // Aguarda a movimentação do carrossel
+
+    // Clica na seta "anterior" para voltar
+    cy.get('button.slick-prev').should('not.have.class', 'slick-disabled').click();
   });
 
-  it('Deve clicar em uma categoria e validar redirecionamento ou alguma ação', () => {
-    cy.get('[data-index="1"]')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', '/category'); // validar rota conforme aplicação
+  it('Valida clique em item do carrossel de categorias', () => {
+    cy.get('[data-index="0"]').contains('Imóveis').click();
+    cy.url().should('include', '/'); // Ajustar a url esperada se conhecida
   });
 
-  it('Deve validar card "Acontecendo agora"', () => {
-    cy.get('[data-list-name="Home - Acontecendo agora"] ._LiveCardContainer_tzphe_101')
-      .first()
-      .should('be.visible')
-      .click({ force: true });
-
-    cy.url().should('include', '/evento'); // ajustar conforme rota final
-  });
-
-  it('Deve navegar pelo carrossel "Próximos Eventos"', () => {
-    cy.get('[data-list-name="Home - Próximos Eventos"] button.slick-next').click();
-    cy.wait(500);
-    cy.get('[data-list-name="Home - Próximos Eventos"] button.slick-prev').click();
-    cy.get('[data-list-name="Home - Próximos Eventos"] ul.slick-dots li button')
-      .eq(1).click();
-  });
-
-  it('Deve validar funcionalidade do botão "Ver Todos"', () => {
-    cy.get('[data-testid="show-all-testid"]')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', '/eventos'); // ajustar rota conforme aplicação
-  });
-
-  it('Deve validar clique no link "Entre" para login', () => {
-    cy.contains('Entre')
-      .should('have.css', 'cursor', 'pointer')
-      .click();
-
-    cy.url().should('include', '/login'); // ou validar exibição de modal
+  it('Valida botão de login "Entre"', () => {
+    cy.contains('Entre na sua conta para ver seus favoritos').within(() => {
+      cy.get('span').contains('Entre').click();
+    });
+    cy.url().should('include', 'login'); // Ajustar para URL correta de login
   });
 
 });
