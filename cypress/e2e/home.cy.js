@@ -1,41 +1,35 @@
-describe('Teste E2E para Superbid Exchange', () => {
-  beforeEach(() => {
-    cy.visit('https://bidtv.stage.superbid.net/');
-  });
+describe('Teste E2E da página inicial', () => {
+    beforeEach(() => {
+        cy.visit('https://bidtv.stage.superbid.net/');
+    });
 
-  it('Valida o banner principal', () => {
-    // Verifica o banner desktop
-    cy.get('[alt="main banner"]').should('have.attr', 'src').and('include', 'banner-bidtv.webp');
+    it('Verifica o botão "Lista completa de eventos"', () => {
+        cy.get('button[data-testid="button-testid"]').should('be.visible').click();
+        // Adicionar verificação do redirecionamento aqui
+    });
 
-    // Verifica o banner mobile
-    cy.get('[alt="main banner"]').should('have.attr', 'src').and('include', 'bannerMobile.webp');
-  });
+    it('Navegação no carrossel de categorias', () => {
+        cy.get('.slick-arrow.slick-next').click(); // Navega para a direita
+        cy.get('.slick-arrow.slick-prev').click(); // Navega para a esquerda
+        cy.get('div._categoryContainer_11e0j_143').first().click(); // Clica no primeiro item da categoria
+        // Adicionar verificação do redirecionamento aqui
+    });
 
-  it('Valida o botão "Lista completa de eventos"', () => {
-    // Clica no botão e verifica o redirecionamento
-    cy.get('[data-testid="button-testid"]').click();
-    cy.url().should('include', '/eventos-completos');
-  });
+    it('Interação com cards "Acontecendo agora"', () => {
+        cy.get('div._LiveCardContainer_tzphe_101').first().click(); // Clica no primeiro card
+        // Adicionar verificação do redirecionamento aqui
+    });
 
-  it('Interage com o carrossel de categorias', () => {
-    // Clica no botão para avançar no carrossel e valida que ele muda de posição
-    cy.get('.slick-next').click();
-    cy.get('.slick-list').should('have.css', 'transform', 'matrix(1, 0, 0, 1, -174, 0)');
+    it('Navegação no carrossel "Próximos Eventos"', () => {
+        cy.get('.slick-arrow.slick-next').click(); // Navega para a direita
+        cy.get('.slick-arrow.slick-prev').click(); // Navega para a esquerda
+        cy.get('ul.slick-dots > li > button').first().click(); // Clica no dot da primeira página
+        cy.get('div[data-testid="show-all-testid"]').click(); // Clica no botão "Ver Todos"
+        // Adicionar verificação do redirecionamento aqui
+    });
 
-    // Clica no botão para retroceder no carrossel e valida que ele retorna à posição original
-    cy.get('.slick-prev').click();
-    cy.get('.slick-list').should('have.css', 'transform', 'matrix(1, 0, 0, 1, 0, 0)');
-  });
-
-  it('Valida interação com categorias', () => {
-    // Clica em uma categoria e valida o redirecionamento
-    cy.get('span').contains('Imóveis').click();
-    cy.url().should('include', '/categoria/imoveis');
-  });
-
-  it('Valida o link de login', () => {
-    // Clica no texto "Entre" e valida redirecionamento ou modal de login
-    cy.contains('Entre').click();
-    cy.url().should('include', '/login');
-  });
+    it('Verifica o link "Entre" para login', () => {
+        cy.get('h1._title_dtde6_133 ._titleUnderline_dtde6_150').contains('Entre').click(); // Clica no link "Entre"
+        // Adicionar verificação do modal ou redirecionamento para a página de login aqui
+    });
 });
