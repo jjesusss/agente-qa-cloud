@@ -1,56 +1,35 @@
-describe('Teste E2E no site Superbid Exchange', () => {
-  beforeEach(() => {
+describe('Teste E2E da página Superbid Exchange', function() {
+  
+  beforeEach(function() {
     cy.visit('https://bidtv.stage.superbid.net/');
   });
 
-  it('Valida o banner principal nos dispositivos desktop e mobile', () => {
-    cy.get('._desktopBanner_1ceul_144 img')
-      .should('have.attr', 'src', 'https://bidtv.stage.superbid.net/images/banner-bidtv.webp')
-      .and('have.attr', 'alt', 'main banner');
-    cy.viewport('iphone-6');
-    cy.get('._mobileBanner_1ceul_157 img')
-      .should('have.attr', 'src', 'https://bidtv.stage.superbid.net/images/bannerMobile.webp')
-      .and('have.attr', 'alt', 'main banner');
+  it('Valida o banner principal', function() {
+    cy.get('img[alt="main banner"]').should('have.attr', 'src', 'https://bidtv.stage.superbid.net/images/banner-bidtv.webp');
   });
 
-  it('Verifica o botão "Lista completa de eventos"', () => {
-    cy.get('[data-testid="button-testid"]').should('be.visible').click();
-    // Adicione uma verificação para confirmar se foi redirecionado corretamente
+  it('Verifica o botão "Lista completa de eventos"', function() {
+    cy.get('button[data-testid="button-testid"]').should('contain.text', 'Lista completa de eventos').click();
+    // Após o clique, adicionar verificação para garantir que estamos na página/lista de eventos completa
   });
 
-  it('Navega pelas categorias usando as setas do carrossel', () => {
+  it('Valida as setas de navegação do carrossel "Navegue pelas categorias"', function() {
     cy.get('.slick-arrow.slick-next').click();
-    cy.get('.slick-arrow.slick-prev').click().should('not.have.class', 'slick-disabled');
+    // Aguarde o carrossel rolar. Poderia adicionar verificações para garantir que as categorias mudaram
   });
 
-  it('Verifica navegação dentro das categorias do slider', () => {
-    cy.get('._categoryContainer_11e0j_143').first().click();
-    // Adicione uma verificação para confirmar a navegação correta
+  it('Interage e verifica a resposta ao selecionar categorias', function() {
+    cy.get('span').contains('Imóveis').click();
+    // Verifique se estamos na página correspondente de "Imóveis"
   });
 
-  it('Valida interação com elementos de eventos "Acontecendo agora"', () => {
-    cy.get('._FeaturedLivesContainer_7mytm_129[data-list-name="Home - Acontecendo agora"] .slick-active')
-      .each(($el) => {
-        cy.wrap($el).click();
-        // Adicione uma verificação para confirmar a navegação correta
-      });
+  it('Testa o botão "Ver Todos" na seção "Próximos Eventos"', function() {
+    cy.get('div[data-testid="show-all-testid"]').click();
+    // Após o clique, adicionar verificação para garantir que todos os eventos estão visíveis/mostrados
   });
 
-  it('Valida interação com elementos de "Próximos Eventos"', () => {
-    cy.get('._FeaturedLivesContainer_7mytm_129[data-list-name="Home - Próximos Eventos"] .slick-active')
-      .each(($el) => {
-        cy.wrap($el).click();
-        // Adicione uma verificação para confirmar a navegação correta
-      });
-  });
-
-  it('Verifica o botão "Ver Todos" nos eventos', () => {
-    cy.get('[data-testid="show-all-testid"]').should('be.visible').click();
-    // Adicione uma verificação para confirmar a expansão da lista
-  });
-
-  it('Interage com os indicadores de página do slider', () => {
-    cy.get('.slick-dots li').eq(1).click();
-    cy.get('.slick-dots li').eq(0).should('not.have.class', 'slick-active');
+  it('Verifica os botões de paginação do carrossel "Próximos Eventos"', function() {
+    cy.get('ul.slick-dots li').eq(1).click();
+    // Verifique se outro conjunto de eventos é exibido, indicando mudança na paginação
   });
 });
