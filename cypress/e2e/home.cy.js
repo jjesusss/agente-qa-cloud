@@ -1,69 +1,50 @@
-describe('Teste E2E Exchange Superbid', () => {
+/// <reference types="cypress" />
+
+describe('Teste E2E - Página Inicial BidTV', () => {
   beforeEach(() => {
-    cy.visit('https://exchange.stage.superbid.net');
+    cy.visit('https://bidtv.stage.superbid.net');
   });
 
-  it('Valida o carregamento inicial e elementos principais da página', () => {
-    // Verifica se o root foi montado corretamente
-    cy.get('#root').should('exist');
+  it('Valida presença dos banners principais (desktop e mobile)', () => {
+    cy.get('[data-testid="Highlights"] img[alt="main banner"]')
+      .should('have.attr', 'src')
+      .and('include', 'banner-bidtv.webp');
 
-    // Verifica se o conteúdo principal está presente
-    cy.get('main').should('exist');
+    cy.get('[data-testid="Highlights"] img[alt="main banner"]')
+      .should('have.attr', 'src')
+      .and('include', 'bannerMobile.webp');
+  });
 
-    // Verifica se existe um container visível em tela cheia
-    cy.get('main div')
-      .filter((index, el) => {
-        return getComputedStyle(el).height === '100vh' && getComputedStyle(el).display === 'flex';
+  it('Valida seção de próximos eventos', () => {
+    cy.get('[data-testid="Highlights"]').within(() => {
+      cy.contains('Próximos Eventos').should('be.visible');
+      cy.contains('Veja os próximos eventos na Superbid Exchange').should('be.visible');
+    });
+  });
+
+  it('Valida botão "Lista completa de eventos"', () => {
+    cy.get('[data-testid="button-testid"]').should('be.visible').and('contain.text', 'Lista completa de eventos');
+    cy.get('[data-testid="button-testid"]').click();
+    cy.url().should('include', '/eventos'); // ajuste conforme a URL correta de redirecionamento
+  });
+
+  it('Valida existência de carrossel de eventos ao carregar', () => {
+    cy.get('[data-testid="Highlights"]').should('exist');
+    cy.get('[data-testid="Highlights"] button').should('be.visible');
+  });
+
+  it('Valida mensagem de login para ver favoritos', () => {
+    cy.contains('Entre').should('be.visible');
+    cy.contains('na sua conta para ver seus favoritos').should('be.visible');
+  });
+
+  it('Valida exibição dos blocos de eventos com Skeletons (placeholder)', () => {
+    cy.get('main')
+      .find('span')
+      .filter((_, el) => {
+        const height = parseInt(el.style.height, 10);
+        return height >= 20 && el.innerText === '';
       })
-      .should('have.length.at.least', 1)
-      .and('be.visible');
-  });
-
-  it('Valida banners (assumindo que são carregados dinamicamente)', () => {
-    // Espera pelos banners se forem carregados dinamicamente
-    cy.get('#root').within(() => {
-      cy.get('img', { timeout: 10000 }).should('exist').and('be.visible');
-    });
-  });
-
-  it('Valida existência e funcionamento dos botões principais', () => {
-    // Espera por botões visíveis
-    cy.get('button', { timeout: 10000 }).should('have.length.at.least', 1).each(($btn) => {
-      cy.wrap($btn).should('be.visible');
-    });
-  });
-
-  it('Valida se existe um carrossel na página (baseado em imagens ou listas)', () => {
-    // Procura por elementos de carrossel (assumindo presença de lista ou sliders)
-    cy.get('#root').within(() => {
-      cy.get('[aria-roledescription="carousel"], [role="region"], ul, ol')
-        .filter((index, el) => el.childElementCount > 1)
-        .first()
-        .should('exist')
-        .and('be.visible');
-    });
-  });
-
-  it('Valida blocos de eventos com informações exibidas', () => {
-    // Busca por elementos com datas ou nomes (assumindo <section>, <article> ou <div>)
-    cy.get('#root').within(() => {
-      cy.get('section, article, div')
-        .filter((index, el) => {
-          return /[0-9]{2}\/[0-9]{2}\/[0-9]{4}/.test(el.innerText) || /evento/i.test(el.innerText.toLowerCase());
-        })
-        .should('have.length.at.least', 1);
-    });
-  });
-
-  it('Valida a aparição de modais ao interagir com algum botão (se aplicável)', () => {
-    cy.get('button').then(($btnList) => {
-      if ($btnList.length) {
-        cy.wrap($btnList.first()).click();
-
-        cy.get('div')
-          .filter((index, el) => getComputedStyle(el).zIndex === '1400' && getComputedStyle(el).display !== 'none')
-          .should('exist');
-      }
-    });
+      .should('have.length.greaterThan', 0);
   });
 });
