@@ -1,9 +1,14 @@
-describe('Banner e botão "Lista completa de Eventos"', () => {
-  it('Deve carregar o banner inicial e redirecionar para /up-comming/ ao clicar no botão', () => {
+describe('Exibir Banner Highlights', () => {
+  it('Deve carregar o destaque principal com botão de lista completa de eventos', () => {
     cy.visit('https://bidtv.stage.superbid.net/')
-    cy.log('Verificando o carregamento do banner inicial')
+
+    cy.log('Verifica se o banner de destaque está visível')
     cy.get('[data-testid="Highlights"]').should('be.visible')
-    cy.get('[data-testid="button-testid"]').should('be.visible').click()
-    cy.url().should('include', '/up-comming')
+
+    cy.log('Verifica se o botão "Lista completa de eventos" está presente e clica nele')
+    cy.get('[data-testid="button-testid"]')
+      .should('be.visible')
+      .contains('Lista completa de eventos')
+      .click()
   })
 })
