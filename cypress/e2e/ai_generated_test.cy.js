@@ -1,29 +1,27 @@
-Cypress.Commands.add("validateBanner", () => {
-    cy.get('div._container_p0nid_1').should('be.visible'); // Verifica banner desktop
-    cy.get('div._container_qenym_129').should('be.visible'); // Verifica banner mobile
-});
-
-describe('Teste E2E', () => {
-    it('Valida a página inicial e suas funcionalidades', () => {
-        // a. Visita a página inicial
+describe('Testes E2E na Página Inicial', () => {
+    it('Deve validar a renderização e interações na página inicial', () => {
+        // Passo 1: Visita a página inicial
         cy.visit('/');
 
-        // b. Valida renderização de banners desktop e mobile
-        cy.validateBanner();
+        // Passo 2: Valida renderização de banners desktop e mobile
+        cy.get('div._desktopBanner_1ceul_144 img').should('be.visible');
+        cy.get('div._mobileBanner_1ceul_157 img').should('be.visible');
 
-        // c. Verifica conteúdo do bloco "Próximos Eventos"
-        cy.get('div._container_qenym_129').contains('Próximos Eventos').should('be.visible');
+        // Passo 3: Verifica conteúdo do bloco "Próximos Eventos"
+        cy.get('div._videoInfo_1ceul_162 span').contains('Próximos Eventos').should('be.visible');
 
-        // d. Valida a presença e clique do botão "Lista completa de eventos"
-        cy.get('button').contains('Lista completa de eventos').should('be.visible').click();
+        // Passo 4: Valida a presença e clica no botão "Lista completa de eventos"
+        cy.get('button[data-testid="button-testid"]').should('be.visible').click();
 
-        // e. Interage com o carrossel de categorias, validando pelo menos um item visível
-        cy.get('.carousel-categories').find('.category-item').first().should('be.visible');
+        // Passo 5: Interage com o carrossel de categorias, validando pelo menos um item visível
+        cy.get('div.MuiBox-root.css-1afp10f').find('div.MuiStack-root').first().should('be.visible');
 
-        // f. Interage com o carrossel de eventos ao vivo ("Acontecendo agora")
-        cy.get('.carousel-live-events').find('.event-item').first().should('be.visible').click();
+        // Passo 6: Interage com o carrossel de eventos ao vivo ("Acontecendo agora")
+        cy.get('div._FeaturedLivesContainer_7mytm_129').find('div.MuiBox-root').first().should('be.visible');
 
-        // g. Valida o botão "Ver Todos" em "Próximos Eventos"
-        cy.get('button').contains('Ver Todos').should('be.visible');
+        // Passo 7: Valida o botão "Ver Todos" em "Próximos Eventos"
+        cy.get('div._videoInfo_1ceul_162').within(() => {
+            cy.get('button').contains('Ver Todos').should('be.visible');
+        });
     });
 });
