@@ -1,45 +1,38 @@
-describe('Teste E2E da página inicial do site BidTV', () => {
-  before(() => {
-    cy.visit('https://bidtv.stage.superbid.net/');
-  });
+describe('Página inicial do BidTV - Testes E2E', () => {
+  it('Deve acessar a home e interagir com os elementos principais', () => {
+    cy.visit('https://bidtv.stage.superbid.net/')
 
-  it('Deve carregar a página inicial corretamente', () => {
-    cy.title().should('include', 'Acompanhe e dê lances em eventos todos os dias.');
-  });
+    cy.log('Verifica o botão "Lista completa de eventos" e clica nele')
+    cy.get('[data-testid="button-testid"]').should('be.visible').click()
+    cy.url().should('include', '/eventos')
+    cy.go('back')
 
-  it('Deve exibir o logotipo corretamente', () => {
-    cy.get('[alt="logo"]').should('be.visible');
-  });
+    cy.log('Verifica o link "Entre" para login')
+    cy.contains('Entre').should('be.visible')
 
-  it('Deve exibir o campo de busca', () => {
-    cy.get('input[placeholder="Busque pelo código do evento ou produto."]').should('exist');
-  });
+    cy.log('Interage com o carrossel de categorias')
+    cy.get('.slick-slider:first-child .slick-next').click()
+    cy.wait(500)
+    cy.get('.slick-slider:first-child .slick-prev').click()
 
-  it('Deve exibir botão de Entrar', () => {
-    cy.contains('Entrar').should('be.visible');
-  });
+    cy.log('Clica na categoria "Imóveis"')
+    cy.contains('Imóveis').should('be.visible').click()
+    cy.url().should('include', '/imoveis')
+    cy.go('back')
 
-  it('Deve exibir o banner principal na versão desktop ou mobile', () => {
-    cy.get('img[alt="main banner"]').should('be.visible');
-  });
+    cy.log('Verifica carrossel "Acontecendo agora"')
+    cy.get('[data-list-name="Home - Acontecendo agora"]').should('be.visible')
 
-  it('Deve exibir o título "Próximos Eventos"', () => {
-    cy.contains('Próximos Eventos').should('be.visible');
-  });
+    cy.log('Verifica carrossel "Próximos Eventos"')
+    cy.get('[data-list-name="Home - Próximos Eventos"]').should('be.visible')
 
-  it('Deve exibir o botão "Lista completa de eventos"', () => {
-    cy.contains('Lista completa de eventos').should('be.visible');
-  });
+    cy.log('Navega nos eventos futuros com setas')
+    cy.get('[data-list-name="Home - Próximos Eventos"] .slick-next').click()
+    cy.wait(500)
+    cy.get('[data-list-name="Home - Próximos Eventos"] .slick-prev').click()
 
-  it('Deve exibir a seção "Navegue pelas categorias"', () => {
-    cy.contains('Navegue pelas categorias').should('be.visible');
-  });
-
-  it('Deve exibir a seção "Acontecendo agora"', () => {
-    cy.contains('Acontecendo agora').should('be.visible');
-  });
-
-  it('Deve exibir seção de rodapé com o texto "Superbid"', () => {
-    cy.get('footer').contains('Superbid').should('be.visible');
-  });
-});
+    cy.log('Clica no botão "Ver Todos" em próximos eventos')
+    cy.get('[data-testid="show-all-testid"]').should('be.visible').click()
+    cy.url().should('include', '/eventos')
+  })
+})
