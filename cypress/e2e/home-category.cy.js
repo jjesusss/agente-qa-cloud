@@ -1,13 +1,18 @@
-describe('BidTV - Interação com categorias', () => {
-  it('Deve exibir e interagir com a categoria "Carros & Motos"', () => {
-    cy.visit('https://bidtv.stage.superbid.net/')
-    cy.log('Verificando a presença do carrossel de categorias')
-    cy.contains("Navegue pelas categorias").parent().should('be.visible')
+describe('Exibir e interagir com categorias', () => {
+  it('Deve acessar a página e interagir com o carrossel de categorias', () => {
+    cy.visit('https://bidtv.stage.superbid.net/');
+    cy.log('Página carregada');
 
-    cy.log('Clicando na seta direita do carrossel para revelar mais categorias')
-    cy.contains("Navegue pelas categorias").parent().find('button.slick-next').click()
+    cy.contains('Navegue pelas categorias').should('be.visible');
+    cy.log('Título de categorias visível');
 
-    cy.log('Verificando e clicando na categoria "Carros & Motos"')
-    cy.contains("Carros & Motos").should('be.visible').click()
-  })
-})
+    cy.get('main').find('button.slick-next').click();
+    cy.wait(500);
+    cy.get('main').find('button.slick-prev').click();
+    cy.wait(500);
+    cy.log('Navegação no carrossel de categorias realizada');
+
+    cy.contains('Imóveis').should('be.visible').click();
+    cy.log('Categoria "Imóveis" clicada');
+  });
+});
